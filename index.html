@@ -1,40 +1,238 @@
 <!doctype html>
 <html lang="en">
-	<head>
-		<meta charset="utf-8">
-		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
-		<title>reveal.js</title>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
-		<link rel="stylesheet" href="dist/reset.css">
-		<link rel="stylesheet" href="dist/reveal.css">
-		<link rel="stylesheet" href="dist/theme/black.css">
+	<title>CMake Intro</title>
 
-		<!-- Theme used for syntax highlighted code -->
-		<link rel="stylesheet" href="plugin/highlight/monokai.css">
-	</head>
-	<body>
-		<div class="reveal">
-			<div class="slides">
-				<section>Slide 1</section>
-				<section>Slide 2</section>
-			</div>
+	<link rel="shortcut icon" type="image/x-icon" , href="https://www.vectorlogo.zone/logos/cmake/cmake-icon.svg" />
+	<link rel="stylesheet" href="dist/reset.css">
+	<link rel="stylesheet" href="dist/reveal.css">
+	<link rel="stylesheet" href="dist/theme/white.css">
+
+	<!-- Theme used for syntax highlighted code -->
+	<!-- <link rel="stylesheet" href="plugin/highlight/monokai.css"> -->
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css">
+
+	<style>
+		/* https://www.w3schools.com/howto/tryit.asp?filename=tryhow_css_danger */
+		.danger {
+			background-color: #ffdddd;
+			border-left: 6px solid #f44336;
+		}
+
+		.success {
+			background-color: #ddffdd;
+			border-left: 6px solid #04AA6D;
+		}
+
+		.info {
+			background-color: #e7f3fe;
+			border-left: 6px solid #2196F3;
+		}
+
+
+		.warning {
+			background-color: #ffffcc;
+			border-left: 6px solid #ffeb3b;
+		}
+
+		p.footnote {
+			font-size: 0.75em;
+		}
+	</style>
+</head>
+
+<body>
+	<div class="reveal">
+		<div class="slides">
+			<section>
+				<img src="https://www.vectorlogo.zone/logos/cmake/cmake-icon.svg">
+				<h2>CMake Intro</h2>
+				<p>
+					James Smith
+					<br>
+					Jun. 15th, 2023
+				</p>
+			</section>
+
+			<section>
+				<!-- <h2>Build Systems</h2> -->
+				<blockquote
+					cite="https://subscription.packtpub.com/book/programming/9781789343625/23/ch23lvl1sec48/what-is-a-build-system#:~:text=Put%20simply%2C%20a%20build%20system,%2C%20Gradle%2C%20and%20so%20on.">
+					Put simply, a build system is a set of programs and companion text files that collectively build a
+					software code base.</blockquote>
+				<p>- Onorato Vaticone</p>
+			</section>
+
+			<section>
+				<h2>Popular build systems</h2>
+				<ul style="columns:2; column-gap:4em;">
+					<li><a href="https://cmake.org/">CMake*</a></li>
+					<li><a href="https://www.gnu.org/software/make">GNU Make</a></li>
+					<li><a href="https://ninja-build.org/">ninja</a></li>
+					<li><a href="https://bazel.build/">Bazel</a></li>
+					<li><a href="https://scons.org/">SCons</a></li>
+					<li><a href="https://mesonbuild.com/">Meson</a></li>
+					<li><a href="https://build2.org/">build2</a></li>
+				</ul>
+				<p>For a more complete discussion see: <a
+						href="https://hackingcpp.com/cpp/tools/build_systems.html">hacking C++ blog.</a></p>
+
+				<p class="fragment"><em>*Technically, CMake is a build system generator, but I'll use the terms
+						interchangably here.</em></p>
+
+			</section>
+
+			<section>
+				<h2>Objectives</h2>
+
+				<ol>
+					<li>Use/understand someone else's CMake infrastructure</li>
+					<li class="fragment">Write a simple CMake build system from scratch</li>
+					<li class="fragment">Integrate tests with CMake/CTest</li>
+					<li class="fragment">Install packages with CMake</li>
+					<li class="fragment">[Bonus]: Look for libraries/packages</li>
+					<li class="fragment">[Bonus]: Manage dependencies</li>
+				</ol>
+			</section>
+
+			<section>
+				<h2> Part 1: Building someone else's CMake project</h2>
+			</section>
+
+			<section>
+				<p>Standard procedure:</p>
+				<pre><code data-trim data-noescape data-line-numbers="1|2|3">
+					cmake -S . -B build
+					cmake --build build
+					cmake --build build --target test
+				</code></pre>
+
+				<p>Old school procedure (avoid if possible)</p>
+				<pre><code data-trim data-noescape data-line-numbers="1-3|4|5">
+					mkdir -p build
+					cd build
+					cmake ..
+					make
+					make test
+				</code></pre>
+
+				<div class="danger fragment">
+					<p><span>&#9888;</span> work in a build directory<span>&#9888;</span> </p>
+				</div>
+			</section>
+
+			<section>
+				<p>Verbose builds</p>
+				<pre><code data-trim data-noescape data-line-numbers="1|2">
+					cmake --build build --verbose # Option 1
+					cd build && VERBOSE=1 make    # Option 2
+				</code></pre>
+
+
+				<p>Setting options (<code>-DOPTION</code>)</p>
+				<pre><code data-trim data-noescape data-line-numbers="1|2|3|4">
+					cmake -S . -B build -DCMAKE_CXX_COMPILER=clang++
+					cmake -S . -B build -DCMAKE_BUILD_TYPE=Release
+					cmake -S . -B build -DBUILD_SHARED_LIBS=ON
+					cmake -S . -B build -DCMAKE_INSTALL_PREFIX=$(pwd)/install
+				</code></pre>
+			</section>
+
+			<section>
+				<ul>
+					<li>Inspect the result of the configuration phase!</li>
+					<li>List non-advanced cached variables with
+						<pre><code>cmake -LH</code></pre>
+					</li>
+					<li>See all cached options/variables in
+						<pre><code>vim build/CMakeCache.txt</code></pre>
+					</li>
+				</ul>
+			</section>
+
+			<section>
+				<h2>Part 2: Writing your own CMake</h2>
+			</section>
+
+			<section>
+				<p>The bare minimum:</p>
+				<pre><code data-trim data-noescape>
+						cmake_minimum_required(VERSION 3.20)
+
+						project(project_name)
+
+						add_executable(simple_target simple.cpp)
+				</code></pre>
+			</section>
+
+			<section>
+				<pre><code data-trim data-noescape>
+					cmake_minimum_required(VERSION 3.20)
+				</code></pre>
+
+				<br>
+
+				<ul>
+					<li class="fragment">Sets the "policies" so the build behaves exactly like the specified version
+					</li>
+					<li class="fragment">Makes CMake backward compatible until support is dropped</li>
+					<li class="fragment">Think of this as CMake "dumbing itself down"</li>
+				</ul>
+
+				<p class="footnote">See <a
+						href="https://hsf-training.github.io/hsf-training-cmake-webpage/03-cmakelists/index.html">"More
+						Modern CMake"</a> for details</p>
+			</section>
+
+			<section>
+				<pre><code data-trim data-noescape>
+					project(project_name)
+				</code></pre>
+				<br>
+
+				<ul>
+					<li><a href="https://cmake.org/cmake/help/latest/command/project.html">project</a> sets the
+						project name and can optionally specify, version, description, and languages.</li>
+					<li>CMake assumes both C and C++ (called CXX inside CMake)</li>
+				</ul>
+			</section>
+
+			<section>
+				<pre><code data-trim data-noescape>
+					add_executable(simple_target simple.cpp)
+				</code></pre>
+				<br>
+
+				<ul>
+					<li>Typically have at least one executable (<a
+							href="https://cmake.org/cmake/help/latest/command/add_executable.html"><code>add_exectuable</code></a>)
+						or library (<a
+							href="https://cmake.org/cmake/help/latest/command/add_library.html"><code>add_library</code></a>)
+					</li>
+					<li>First argument is the target name (must be unique)</li>
+				</ul>
+			</section>
+
+			</section>
 		</div>
+	</div>
 
-		<script src="dist/reveal.js"></script>
-		<script src="plugin/notes/notes.js"></script>
-		<script src="plugin/markdown/markdown.js"></script>
-		<script src="plugin/highlight/highlight.js"></script>
-		<script>
-			// More info about initialization & config:
-			// - https://revealjs.com/initialization/
-			// - https://revealjs.com/config/
-			Reveal.initialize({
-				hash: true,
+	<script src="dist/reveal.js"></script>
+	<script src="plugin/notes/notes.js"></script>
+	<script src="plugin/markdown/markdown.js"></script>
+	<script src="plugin/highlight/highlight.js"></script>
+	<script>
+		Reveal.initialize({
+			hash: true,
+			slideNumber: true,
+			// Learn about plugins: https://revealjs.com/plugins/
+			plugins: [RevealMarkdown, RevealHighlight, RevealNotes]
+		});
+	</script>
+</body>
 
-				// Learn about plugins: https://revealjs.com/plugins/
-				plugins: [ RevealMarkdown, RevealHighlight, RevealNotes ]
-			});
-		</script>
-	</body>
 </html>
