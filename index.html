@@ -160,7 +160,7 @@
 
 			<section>
 				<p>The bare minimum:</p>
-				<pre><code data-trim data-noescape>
+				<pre><code data-trim data-noescape class="language-cmake">
 						cmake_minimum_required(VERSION 3.20)
 
 						project(project_name)
@@ -170,7 +170,7 @@
 			</section>
 
 			<section>
-				<pre><code data-trim data-noescape>
+				<pre><code data-trim data-noescape class="language-cmake">
 					cmake_minimum_required(VERSION 3.20)
 				</code></pre>
 
@@ -189,7 +189,7 @@
 			</section>
 
 			<section>
-				<pre><code data-trim data-noescape>
+				<pre><code data-trim data-noescape class="language-cmake">
 					project(project_name)
 				</code></pre>
 				<br>
@@ -202,7 +202,7 @@
 			</section>
 
 			<section>
-				<pre><code data-trim data-noescape>
+				<pre><code data-trim data-noescape class="language-cmake">
 					add_executable(simple_target simple.cpp)
 				</code></pre>
 				<br>
@@ -214,6 +214,45 @@
 							href="https://cmake.org/cmake/help/latest/command/add_library.html"><code>add_library</code></a>)
 					</li>
 					<li>First argument is the target name (must be unique)</li>
+				</ul>
+			</section>
+
+			<section>
+				<pre><code data-trim data-noescape class="language-cmake">
+					add_library(simple_lib STATIC simple.cpp)
+				</code></pre>
+				<br>
+
+				<ul>
+					<li>First argument is the target name (must be unique)</li>
+					<li>Second argument can be one of the following:
+						<ul>
+							<li class="fragment"><code>STATIC</code></li>
+							<li class="fragment"><code>SHARED</code></li>
+							<li class="fragment"><code>INTERFACE</code> (fictional target with no compilation)</li>
+							<li class="fragment"><code>ALIAS</code> (alias for existing target)</li>
+							<li class="fragment"><code>MODULE</code> (libraries loaded dynamically at runtime)</li>
+						</ul>
+					</li>
+				</ul>
+			</section>
+
+			<section>
+				<pre><code data-trim data-noescape class="language-cmake">
+					cmake_minimum_required(VERSION 3.20)
+
+					project(simple_app)
+
+					add_library(simple_lib STATIC simple_lib.cpp)
+					target_include_directories(simple_lib PUBLIC include)
+
+					add_executable(simple_app simple_app.cpp)
+					target_link_libraries(simple_app PUBLIC simple_lib)
+				</code></pre>
+				<br>
+
+				<ul>
+					<li></li>
 				</ul>
 			</section>
 

@@ -1,3 +1,0 @@
-/home/james/projects/cmake-intro/examples/02-simple-lib/build/CMakeFiles/simple_lib.dir
-/home/james/projects/cmake-intro/examples/02-simple-lib/build/CMakeFiles/edit_cache.dir
-/home/james/projects/cmake-intro/examples/02-simple-lib/build/CMakeFiles/rebuild_cache.dir
