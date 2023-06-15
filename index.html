@@ -87,6 +87,20 @@
 			</section>
 
 			<section>
+				<iframe style="height: 600px; width: 100%;" src="assets/trend_fig/build_system_trends.html"></iframe>
+			</section>
+
+			<section>
+				<h2>Credits</h2>
+				Henry Schreiner worked on two resources which are great (and are the basis of this talk):
+				<ul>
+					<li><a href="https://cliutils.gitlab.io/modern-cmake/">Modern CMake (Gitbook)</a></li>
+					<li><a href="https://hsf-training.github.io/hsf-training-cmake-webpage/01-intro/index.html">More
+							Modern CMake (Software Carpentry Lesson)</a></li>
+				</ul>
+			</section>
+
+			<section>
 				<h2>Objectives</h2>
 
 				<ol>
@@ -155,10 +169,26 @@
 			</section>
 
 			<section>
+				<p>We'll be doing a side-by-side presentation from now, check out the
+					examples:</p>
+				https://github.com/jamesETsmith/2023-06-15-cmake-intro
+			</section>
+
+			<section>
 				<h2>Part 2: Writing your own CMake</h2>
 			</section>
 
 			<section>
+				<p>Goals:</p>
+				<ul>
+					<li class="fragment">Write simple CMake project from scratch</li>
+					<li class="fragment">Use CMake to build an executable</li>
+					<li class="fragment">Use CMake to build a library</li>
+				</ul>
+			</section>
+
+			<section>
+				<p>02-simple-exec/CMakeLists.txt</p>
 				<p>The bare minimum:</p>
 				<pre><code data-trim data-noescape class="language-cmake">
 						cmake_minimum_required(VERSION 3.20)
@@ -189,14 +219,26 @@
 			</section>
 
 			<section>
-				<pre><code data-trim data-noescape class="language-cmake">
-					project(project_name)
-				</code></pre>
+				<div class="r-stack">
+					<pre class="fragment fade-out">
+						<code data-trim data-noescape class="language-cmake">
+						project(project_name)
+						</code>
+					</pre>
+					<pre class="fragment fade-in"><code data-trim data-noescape class="language-cmake">
+						project(
+							project_name
+							VERSION 1.0
+							DESCRIPTION "Very nice project"
+							LANGUAGES CXX)	
+					</code></pre>
+				</div>
+
 				<br>
 
 				<ul>
 					<li><a href="https://cmake.org/cmake/help/latest/command/project.html">project</a> sets the
-						project name and can optionally specify, version, description, and languages.</li>
+						project name and can optionally specify the name, version, description, and languages.</li>
 					<li>CMake assumes both C and C++ (called CXX inside CMake)</li>
 				</ul>
 			</section>
@@ -238,7 +280,9 @@
 			</section>
 
 			<section>
-				<pre><code data-trim data-noescape class="language-cmake">
+				<p>02-simple-app/CMakeLists.txt</p>
+				<pre><code data-trim data-noescape class="language-cmake" 
+					data-line-numbers="1-3|5-6|8-9|">
 					cmake_minimum_required(VERSION 3.20)
 
 					project(simple_app)
@@ -252,10 +296,122 @@
 				<br>
 
 				<ul>
+					<li class="fragment"><code>PUBLIC</code>: Used by current target <em>and</em> dependencies</li>
+					<li class="fragment"><code>PRIVATE</code>: Used by just current target</li>
+					<li class="fragment"><code>INTERFACE</code>: Used by just dependencies</li>
+				</ul>
+			</section>
+
+			<section>
+				<p>Key points:</p>
+				<ul>
 					<li></li>
 				</ul>
 			</section>
 
+			<section>
+				<h2>Part 3: Integrating tests with CMake/CTest</h2>
+			</section>
+
+			<section>
+				<h3>Goals:</h3>
+				<ul>
+					<li>Build tests</li>
+					<li>Run tests</li>
+					<li>Add tests</li>
+				</ul>
+			</section>
+
+			<section>
+				<h2>Building tests</h2>
+				<ul>
+					<li>Not all projects build tests by default</li>
+					<li>Some use <code>-DBUILD_TESTING=ON</code></li>
+					<li>If they use a custom flag, look in their CMakeLists.txt for
+						<ul>
+							<li><code>include(CTest)</code></li>
+							<li><code>enable_testing()</code></li>
+							<li><code>add_subdirectory</code></li>
+						</ul>
+					</li>
+				</ul>
+			</section>
+
+			<section>
+				<pre><code data-trim data-noescape class="language-bash" 
+					data-line-numbers="1-3|1-4|5-7|8-9">
+					# Run serially
+					cmake --build build --target test
+					ctest --test-dir build
+					cmake --build build --target test --parallel 12
+					# Run in parallel
+					CTEST_PARALLEL_LEVEL=12 cmake --build build --target test
+					ctest --test-dir build --parallel 12
+					# Select subset of tests with RegEx
+					ctest --test-dir build -R filter
+				</code></pre>
+
+			</section>
+
+			<section>
+				<p>In the next few examples, the directory structure will start to look more realistic, i.e.:</p>
+				<pre><code data-trim data-noescape class="language-txt" data-line-numbers="1-3|4|5-7|8-10|11-14">.
+├── cmake
+│   └── FindProject.cmake
+├── CMakeLists.txt
+├── include
+│   └── project
+│       └── lib.hpp
+├── src
+│   ├── CMakeLists.txt
+│   └── lib.cpp
+└── test
+    ├── CMakeLists.txt
+    ├── test_1.cpp
+    └── test_2.cpp
+				</code></pre>
+			</section>
+
+			<section>
+				<p>03-test-simple/CMakeLists.txt</p>
+				<pre><code data-trim data-noescape class="language-cmake">
+				cmake_minimum_required(VERSION 3.20)
+
+				project(simple_lib)
+
+				# src/CMakeLists.txt creates library target
+				add_subdirectory(src)
+
+				enable_testing()
+				# test/CMakeLists.txt creates test targets and registers them
+				add_subdirectory(test)
+					</code></pre>
+			</section>
+
+			<section>
+				<p>03-test-simple/src/CMakeLists.txt</p>
+				<pre><code data-trim data-noescape class="language-cmake" data-line-numbers>
+					add_library(simple_lib STATIC simple_lib.cpp)
+					target_include_directories(simple_lib PUBLIC ${CMAKE_SOURCE_DIR}/include)
+					</code></pre>
+			</section>
+
+			<section>
+				<p>03-test-simple/test/CMakeLists.txt</p>
+				<pre><code data-trim data-noescape class="language-cmake" data-line-numbers>
+					add_executable(test_1 ${CMAKE_CURRENT_SOURCE_DIR}/test_1.cpp)
+					target_link_libraries(test_1 PUBLIC simple_lib)
+					add_test(NAME test_1_fancy_name COMMAND test_1)
+					
+					# This test is written to fail
+					add_executable(test_2 ${CMAKE_CURRENT_SOURCE_DIR}/test_2.cpp)
+					target_link_libraries(test_2 PUBLIC simple_lib)
+					add_test(NAME test_2_fancy_name COMMAND test_2)
+					
+					</code></pre>
+			</section>
+
+			<!-- End of slides -->
 			</section>
 		</div>
 	</div>

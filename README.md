@@ -1,5 +1,7 @@
 # CMake Intro
 
+Please see the `examples` directory to follow along with the presentation.
+
 ## Local Setup
 You'll need `npm` to build this presentation locally. `reveal.js` will use that to install everything else it needs.
  ```shell
