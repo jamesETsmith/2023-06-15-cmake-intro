@@ -39,7 +39,14 @@ pio.templates.default = "jets_talk"
 df = pd.read_csv("data.csv")
 df = pd.melt(df, id_vars=["Month"], var_name="Build System", value_name="Search Metric")
 print(df.head())
-fig = px.line(df, x="Month", y="Search Metric", color="Build System")
+fig = px.line(
+    df,
+    x="Month",
+    y="Search Metric",
+    color="Build System",
+    title="Build System Popularity",
+    labels={"Month": "Time"},
+)
 fig.update_traces(line=dict(width=5))
-fig.update_layout(legend=dict(yanchor="top", y=0.99, xanchor="left", x=0.01))
+fig.update_layout(legend=dict(yanchor="top", y=0.99, xanchor="left", x=0.15))
 fig.write_html("build_system_trends.html")

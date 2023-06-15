@@ -42,6 +42,12 @@
 		p.footnote {
 			font-size: 0.75em;
 		}
+
+		div.slide-title {
+			font-size: 1.25em;
+			border-bottom: solid;
+			margin: 1em;
+		}
 	</style>
 </head>
 
@@ -59,7 +65,17 @@
 			</section>
 
 			<section>
-				<!-- <h2>Build Systems</h2> -->
+				<div class="slide-title">Credits</div>
+				Two great resources by Henry Schreiner that are the basis for this talk:
+				<ul>
+					<li><a href="https://cliutils.gitlab.io/modern-cmake/">Modern CMake (Gitbook)</a></li>
+					<li><a href="https://hsf-training.github.io/hsf-training-cmake-webpage/01-intro/index.html">More
+							Modern CMake (Software Carpentry Lesson)</a></li>
+				</ul>
+			</section>
+
+			<section>
+				<!-- <div class="slide-title">Build Systems</div> -->
 				<blockquote
 					cite="https://subscription.packtpub.com/book/programming/9781789343625/23/ch23lvl1sec48/what-is-a-build-system#:~:text=Put%20simply%2C%20a%20build%20system,%2C%20Gradle%2C%20and%20so%20on.">
 					Put simply, a build system is a set of programs and companion text files that collectively build a
@@ -68,7 +84,7 @@
 			</section>
 
 			<section>
-				<h2>Popular build systems</h2>
+				<div class="slide-title">Popular build systems</div class="slide-title">
 				<ul style="columns:2; column-gap:4em;">
 					<li><a href="https://cmake.org/">CMake*</a></li>
 					<li><a href="https://www.gnu.org/software/make">GNU Make</a></li>
@@ -77,6 +93,7 @@
 					<li><a href="https://scons.org/">SCons</a></li>
 					<li><a href="https://mesonbuild.com/">Meson</a></li>
 					<li><a href="https://build2.org/">build2</a></li>
+					<li>...</li>
 				</ul>
 				<p>For a more complete discussion see: <a
 						href="https://hackingcpp.com/cpp/tools/build_systems.html">hacking C++ blog.</a></p>
@@ -87,30 +104,31 @@
 			</section>
 
 			<section>
-				<iframe style="height: 600px; width: 100%;" src="assets/trend_fig/build_system_trends.html"></iframe>
+				<div style="text-align: left; display: block;">
+					<iframe style="height: 600px; width: 100%;"
+						src="assets/trend_fig/build_system_trends.html"></iframe>
+
+				</div>
 			</section>
 
 			<section>
-				<h2>Credits</h2>
-				Henry Schreiner worked on two resources which are great (and are the basis of this talk):
-				<ul>
-					<li><a href="https://cliutils.gitlab.io/modern-cmake/">Modern CMake (Gitbook)</a></li>
-					<li><a href="https://hsf-training.github.io/hsf-training-cmake-webpage/01-intro/index.html">More
-							Modern CMake (Software Carpentry Lesson)</a></li>
-				</ul>
-			</section>
-
-			<section>
-				<h2>Objectives</h2>
+				<div class="slide-title">Objectives</div>
 
 				<ol>
 					<li>Use/understand someone else's CMake infrastructure</li>
 					<li class="fragment">Write a simple CMake build system from scratch</li>
 					<li class="fragment">Integrate tests with CMake/CTest</li>
-					<li class="fragment">Install packages with CMake</li>
-					<li class="fragment">[Bonus]: Look for libraries/packages</li>
-					<li class="fragment">[Bonus]: Manage dependencies</li>
+					<!-- <li class="fragment">Grab bag of advice</li> -->
+					<li class="fragment">[Next time]: Look for libraries/packages</li>
+					<li class="fragment">[Next time]: Manage dependencies</li>
+					<li class="fragment">[Next time]: Install packages with CMake</li>
 				</ol>
+			</section>
+
+			<section>
+				<p>We'll be doing a side-by-side presentation from now, check out the
+					examples:</p>
+				https://github.com/jamesETsmith/2023-06-15-cmake-intro
 			</section>
 
 			<section>
@@ -118,7 +136,16 @@
 			</section>
 
 			<section>
-				<p>Standard procedure:</p>
+				<div class="slide-title">Goals:</div>
+				<ol>
+					<li class="fragment">Configure CMake project</li>
+					<li class="fragment">Build CMake project</li>
+					<li class="fragment">Modify configure/build behavior from the command line</li>
+				</ol>
+			</section>
+
+			<section>
+				<div class="slide-title">Configure + Build</div>
 				<pre><code data-trim data-noescape data-line-numbers="1|2|3">
 					cmake -S . -B build
 					cmake --build build
@@ -135,11 +162,12 @@
 				</code></pre>
 
 				<div class="danger fragment">
-					<p><span>&#9888;</span> work in a build directory<span>&#9888;</span> </p>
+					<p><span>&#9888;</span>Use build directory, don't do in-source builds<span>&#9888;</span> </p>
 				</div>
 			</section>
 
 			<section>
+				<div class="slide-title">Basic Command Line Options</div>
 				<p>Verbose builds</p>
 				<pre><code data-trim data-noescape data-line-numbers="1|2">
 					cmake --build build --verbose # Option 1
@@ -157,39 +185,37 @@
 			</section>
 
 			<section>
+				<div class="slide-title">Basic Debugging</div>
 				<ul>
-					<li>Inspect the result of the configuration phase!</li>
-					<li>List non-advanced cached variables with
+					<li class="fragment">Inspect the result of the configuration phase!</li>
+					<li class="fragment">Build with <code>--verbose</code> flag</li>
+					<li class="fragment">List some CMake options/variables variables with
 						<pre><code>cmake -LH</code></pre>
 					</li>
-					<li>See all cached options/variables in
+					<li class="fragment">See all cached options/variables in
 						<pre><code>vim build/CMakeCache.txt</code></pre>
 					</li>
 				</ul>
 			</section>
 
 			<section>
-				<p>We'll be doing a side-by-side presentation from now, check out the
-					examples:</p>
-				https://github.com/jamesETsmith/2023-06-15-cmake-intro
+				<h2>Part 2: Writing your own CMake
+				</h2>
 			</section>
 
 			<section>
-				<h2>Part 2: Writing your own CMake</h2>
-			</section>
-
-			<section>
-				<p>Goals:</p>
-				<ul>
+				<div class="slide-title">Goals:</div>
+				<ol>
 					<li class="fragment">Write simple CMake project from scratch</li>
 					<li class="fragment">Use CMake to build an executable</li>
 					<li class="fragment">Use CMake to build a library</li>
-				</ul>
+				</ol>
 			</section>
 
 			<section>
+				<div class="slide-title">The Bare Minimum</div>
+
 				<p>02-simple-exec/CMakeLists.txt</p>
-				<p>The bare minimum:</p>
 				<pre><code data-trim data-noescape class="language-cmake">
 						cmake_minimum_required(VERSION 3.20)
 
@@ -200,6 +226,7 @@
 			</section>
 
 			<section>
+				<div class="slide-title">First Line</div>
 				<pre><code data-trim data-noescape class="language-cmake">
 					cmake_minimum_required(VERSION 3.20)
 				</code></pre>
@@ -219,6 +246,7 @@
 			</section>
 
 			<section>
+				<div class="slide-title">Project Details</div>
 				<div class="r-stack">
 					<pre class="fragment fade-out">
 						<code data-trim data-noescape class="language-cmake">
@@ -244,22 +272,27 @@
 			</section>
 
 			<section>
+				<div class="slide-title">Building an Executable</div>
 				<pre><code data-trim data-noescape class="language-cmake">
 					add_executable(simple_target simple.cpp)
 				</code></pre>
 				<br>
 
 				<ul>
+
+					<li>First argument is the target name (must be unique)</li>
+					<li>Second argument is the set of source files</li>
 					<li>Typically have at least one executable (<a
 							href="https://cmake.org/cmake/help/latest/command/add_executable.html"><code>add_exectuable</code></a>)
 						or library (<a
 							href="https://cmake.org/cmake/help/latest/command/add_library.html"><code>add_library</code></a>)
 					</li>
-					<li>First argument is the target name (must be unique)</li>
 				</ul>
 			</section>
 
 			<section>
+				<div class="slide-title">Building a Library</div>
+
 				<pre><code data-trim data-noescape class="language-cmake">
 					add_library(simple_lib STATIC simple.cpp)
 				</code></pre>
@@ -280,6 +313,8 @@
 			</section>
 
 			<section>
+				<div class="slide-title">Building an Application</div>
+
 				<p>02-simple-app/CMakeLists.txt</p>
 				<pre><code data-trim data-noescape class="language-cmake" 
 					data-line-numbers="1-3|5-6|8-9|">
@@ -305,7 +340,10 @@
 			<section>
 				<p>Key points:</p>
 				<ul>
-					<li></li>
+					<li>You only need three things for a CMake build system: <code>cmake_minimum_required</code>,
+						<code>project</code>, and <code>add_library</code>
+					</li>
+					<li>Think in terms of targets</li>
 				</ul>
 			</section>
 
@@ -314,7 +352,7 @@
 			</section>
 
 			<section>
-				<h3>Goals:</h3>
+				<div class="slide-title">Goals</div>
 				<ul>
 					<li>Build tests</li>
 					<li>Run tests</li>
@@ -323,7 +361,7 @@
 			</section>
 
 			<section>
-				<h2>Building tests</h2>
+				<div class="slide-title">Building tests</div>
 				<ul>
 					<li>Not all projects build tests by default</li>
 					<li>Some use <code>-DBUILD_TESTING=ON</code></li>
@@ -338,6 +376,8 @@
 			</section>
 
 			<section>
+				<div class="slide-title">Running Tests</div>
+
 				<pre><code data-trim data-noescape class="language-bash" 
 					data-line-numbers="1-3|1-4|5-7|8-9">
 					# Run serially
@@ -354,6 +394,8 @@
 			</section>
 
 			<section>
+				<div class="slide-title">Project Structure</div>
+
 				<p>In the next few examples, the directory structure will start to look more realistic, i.e.:</p>
 				<pre><code data-trim data-noescape class="language-txt" data-line-numbers="1-3|4|5-7|8-10|11-14">.
 ├── cmake
@@ -373,6 +415,8 @@
 			</section>
 
 			<section>
+				<div class="slide-title">Test Example</div>
+
 				<p>03-test-simple/CMakeLists.txt</p>
 				<pre><code data-trim data-noescape class="language-cmake">
 				cmake_minimum_required(VERSION 3.20)
@@ -389,6 +433,8 @@
 			</section>
 
 			<section>
+				<div class="slide-title">Test Example</div>
+
 				<p>03-test-simple/src/CMakeLists.txt</p>
 				<pre><code data-trim data-noescape class="language-cmake" data-line-numbers>
 					add_library(simple_lib STATIC simple_lib.cpp)
@@ -397,6 +443,8 @@
 			</section>
 
 			<section>
+				<div class="slide-title">Test Example</div>
+
 				<p>03-test-simple/test/CMakeLists.txt</p>
 				<pre><code data-trim data-noescape class="language-cmake" data-line-numbers>
 					add_executable(test_1 ${CMAKE_CURRENT_SOURCE_DIR}/test_1.cpp)
@@ -409,6 +457,46 @@
 					add_test(NAME test_2_fancy_name COMMAND test_2)
 					
 					</code></pre>
+			</section>
+
+			<section>
+				<div class="slide-title">Part 3: Miscellaneous Tips</div>
+			</section>
+
+			<section>
+				<div class="slide-title">Setting Compiler Flags</div>
+				<pre><code data-trim data-noescape class="language-cmake" data-line-numbers>
+					cmake -S . -B build -DCMAKE_C_FLAGS="-O2 -ftree-vectorize"
+				</code></pre>
+				<p>Note that these flags may interact with those set by <code>CMAKE_BUILD_TYPE</code></p>
+			</section>
+
+			<section>
+				CMAKE_BUILD_TYPE
+			</section>
+
+			<section>
+				Antipatterns
+			</section>
+
+			<section>
+				cmake scripts
+			</section>
+
+			<section>
+				find_package()
+			</section>
+
+			<section>
+				FetchContent_Declare()
+			</section>
+
+			<section>
+				CMAKE_INSTALL_PREFIX
+			</section>
+
+			<section>
+				CPMAddPackage
 			</section>
 
 			<!-- End of slides -->
