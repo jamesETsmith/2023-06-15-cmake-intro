@@ -464,6 +464,18 @@
 			</section>
 
 			<section>
+				<div class="slide-title">Antipatterns</div>
+				<ul>
+					<li class="fragment">Don't use global functions like <code>link_directories</code> or
+						<code>link_libraries</code>
+					</li>
+					<li class="fragment">Don't add <code>PUBLIC</code> requirements where it's not needed</li>
+					<li class="fragment">Don't link to build library files, link to their targets</li>
+				</ul>
+
+			</section>
+
+			<section>
 				<div class="slide-title">Setting Compiler Flags</div>
 				<pre><code data-trim data-noescape class="language-cmake" data-line-numbers>
 					cmake -S . -B build -DCMAKE_C_FLAGS="-O2 -ftree-vectorize"
@@ -472,6 +484,10 @@
 			</section>
 
 			<section>
+				<h2>Questions?</h2>
+			</section>
+
+			<!-- <section>
 				CMAKE_BUILD_TYPE
 			</section>
 
@@ -497,7 +513,7 @@
 
 			<section>
 				CPMAddPackage
-			</section>
+			</section> -->
 
 			<!-- End of slides -->
 			</section>
